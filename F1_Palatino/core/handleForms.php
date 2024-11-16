@@ -4,7 +4,7 @@ require_once 'dbConfig.php';
 require_once 'models.php';
 
 if (isset($_POST['insertUserBtn'])) {
-	$insertUser = insertNewUser(
+    $insertUser = insertNewApplicant(
         $pdo, 
         $_POST['first_name'], 
         $_POST['last_name'], 
@@ -15,14 +15,15 @@ if (isset($_POST['insertUserBtn'])) {
         $_POST['application_status']
     );
 
-	if ($insertUser) {
-		$_SESSION['message'] = "Successfully inserted!";
-		header("Location: ../index.php");
-	}
+    if ($insertUser) {
+        $_SESSION['message'] = "Successfully inserted!";
+        header("Location: ../index.php");
+        exit;
+    }
 }
 
-if (isset($_POST['editUserBtn'])) {
-	$editUser = editUser(
+if (isset($_POST['editUserBtn'])) { // Corrected to match form button
+    $editUser = editApplicant(
         $pdo, 
         $_POST['first_name'], 
         $_POST['last_name'], 
@@ -31,38 +32,39 @@ if (isset($_POST['editUserBtn'])) {
         $_POST['address'], 
         $_POST['job_position'], 
         $_POST['application_status'], 
-        $_GET['id']
+        $_POST['id'] // Changed from $_GET to $_POST
     );
 
-	if ($editUser) {
-		$_SESSION['message'] = "Successfully edited!";
-		header("Location: ../index.php");
-	}
+    if ($editUser) {
+        $_SESSION['message'] = "Successfully edited!";
+        header("Location: ../index.php");
+        exit;
+    }
 }
 
-if (isset($_POST['deleteUserBtn'])) {
-	$deleteUser = deleteUser($pdo, $_GET['id']);
+if (isset($_POST['deleteUserBtn'])) { // Corrected to match form button
+    $deleteUser = deleteApplicant($pdo, $_POST['id']); // Changed from $_GET to $_POST
 
-	if ($deleteUser) {
-		$_SESSION['message'] = "Successfully deleted!";
-		header("Location: ../index.php");
-	}
+    if ($deleteUser) {
+        $_SESSION['message'] = "Successfully deleted!";
+        header("Location: ../index.php");
+        exit;
+    }
 }
 
 if (isset($_GET['searchBtn'])) {
-	$searchForAUser = searchForAUser($pdo, $_GET['searchInput']);
-	foreach ($searchForAUser as $row) {
-		echo "<tr> 
-				<td>{$row['id']}</td>
-				<td>{$row['first_name']}</td>
-				<td>{$row['last_name']}</td>
-				<td>{$row['email']}</td>
-				<td>{$row['gender']}</td>
-				<td>{$row['address']}</td>
-				<td>{$row['job_position']}</td>
-				<td>{$row['application_status']}</td>
-			  </tr>";
-	}
+    $searchForAUser = searchForApplicant($pdo, $_GET['searchInput']);
+    foreach ($searchForAUser as $row) {
+        echo "<tr> 
+                <td>{$row['id']}</td>
+                <td>{$row['first_name']}</td>
+                <td>{$row['last_name']}</td>
+                <td>{$row['email']}</td>
+                <td>{$row['gender']}</td>
+                <td>{$row['address']}</td>
+                <td>{$row['job_position']}</td>
+                <td>{$row['application_status']}</td>
+              </tr>";
+    }
 }
-
 ?>

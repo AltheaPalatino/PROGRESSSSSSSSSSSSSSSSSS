@@ -9,6 +9,7 @@ function getAllApplicants($pdo) {
     if ($executeQuery) {
         return $stmt->fetchAll();
     }
+    return []; // Ensure a default return value
 }
 
 function getApplicantByID($pdo, $id) {
@@ -18,17 +19,19 @@ function getApplicantByID($pdo, $id) {
     if ($executeQuery) {
         return $stmt->fetch();
     }
+    return null; // Return null if no result
 }
 
 function searchForApplicant($pdo, $searchQuery) {
     $sql = "SELECT * FROM search_applicant WHERE 
-            CONCAT(first_name, last_name, email, gender, address, job_position, application_status) 
+            CONCAT(first_name, ' ', last_name, email, gender, address, job_position, application_status) 
             LIKE ?";
     $stmt = $pdo->prepare($sql);
     $executeQuery = $stmt->execute(["%" . $searchQuery . "%"]);
     if ($executeQuery) {
         return $stmt->fetchAll();
     }
+    return []; // Ensure a default return value
 }
 
 function insertNewApplicant($pdo, $first_name, $last_name, $email, $gender, $address, $job_position, $application_status) {
@@ -39,9 +42,7 @@ function insertNewApplicant($pdo, $first_name, $last_name, $email, $gender, $add
     $executeQuery = $stmt->execute([
         $first_name, $last_name, $email, $gender, $address, $job_position, $application_status
     ]);
-    if ($executeQuery) {
-        return true;
-    }
+    return $executeQuery; // Return directly
 }
 
 function editApplicant($pdo, $first_name, $last_name, $email, $gender, $address, $job_position, $application_status, $id) {
@@ -53,18 +54,14 @@ function editApplicant($pdo, $first_name, $last_name, $email, $gender, $address,
     $executeQuery = $stmt->execute([
         $first_name, $last_name, $email, $gender, $address, $job_position, $application_status, $id
     ]);
-    if ($executeQuery) {
-        return true;
-    }
+    return $executeQuery; // Return directly
 }
 
 function deleteApplicant($pdo, $id) {
     $sql = "DELETE FROM search_applicant WHERE id = ?";
     $stmt = $pdo->prepare($sql);
     $executeQuery = $stmt->execute([$id]);
-    if ($executeQuery) {
-        return true;
-    }
+    return $executeQuery; // Return directly
 }
 
 ?>
